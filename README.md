@@ -354,7 +354,7 @@ user.name = "Hasan"
 user.distribute(in: "login")
 
 //Logout
-Subscriber.current.removeAll(of: User.self, in: "login")
+User.removeAll(in: "login")
 ```
 
 Another example; Bool  

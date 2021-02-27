@@ -294,6 +294,23 @@ public extension Subscribable {
             }
         })
     }
+    
+    /**This will remove all given objects in database `database` default value is `default`
+     */
+     static func removeAll(in database: Subscriber.Database?...) {
+         
+         let type: String = String(describing: Self.self)
+         var databases:[Subscriber.Database] = database.compactMap({$0})
+         if databases.isEmpty { //All databases
+             databases.append(contentsOf: Subscriber.current.collection.keys)
+         }
+         
+         for each in databases {
+             Subscriber.current.collection[each]?.removeAll(where: { $0.database == each && $0.type == type })
+             Subscriber.current.subscriptions.filter({ $0.type == type && $0.database == each })
+                 .forEach({ $0.subscription(.update([])) })
+         }
+     }
 }
 
 fileprivate extension Dictionary where Key == Subscriber.Database, Value == [SubscriptionCollection] {
