@@ -118,7 +118,7 @@ var primaryKey: String? { "id" }    //static
 ```
 
 
-**Examples of Subscribing**
+# Examples of Subscribing
 
 First of all, let's define our Models 
 
@@ -154,7 +154,6 @@ extension Bool: Subscribable {
 extension String: Subscribable {}
 extension Bool: Subscribable {}
 ```
-
 
 
 * List of Categories 
@@ -305,9 +304,7 @@ products.updateAllMatchingPrimaryKeys(in: "default", "purchased") //All elements
 
 
 
-
-
-# EXAMPLES of UI
+# Examples of UI
 
 There is no primary key on Swift Types like String. Therefore, you can subscribe to a list.
 ```
