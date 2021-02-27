@@ -126,7 +126,7 @@ public extension Array where Element: Subscribable {
         cities of Spain -> primarykey is "spain" in database "capitals"
         cities of Germany -> primarykey is "germany" in database "capitals"
     */
-    func subscribe(to primaryKey: String? = "default", in database: Subscriber.Database = "default", block:@escaping SubscriptionResultBlock) -> SubscriptionToken? {
+    static func subscribe(to primaryKey: String? = "default", in database: Subscriber.Database = "default", block:@escaping SubscriptionResultBlock) -> SubscriptionToken? {
         
         let pkey: String = primaryKey ?? "default"
         let key = UUID().uuidString

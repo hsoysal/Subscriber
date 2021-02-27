@@ -20,37 +20,37 @@ To install Subscriber using Swift Package Manager look for https://github.com/hs
 * Register items
 ```
 //To the List of YOURMODEL
-let token = Subscriber.current.objects(of: {YOURMODEL}.self).subscribe({ result in
+let token = [YOURMODEL].subscribe({ result in
             
     switch result {
         case .initial(let items), .update(let items):
-        let yourModels = items as? [{YOURMODEL}]
+        let yourModels = items as? [YOURMODEL]
         ...
     }
 })
 
-let token = Subscriber.current.objects(of: {YOURMODEL}.self).subssubscribe(to: "{LIST-ID}", in: "{DATABASE-ID}", block: { result in
+let token = [YOURMODEL].subscribe(to: "{LIST-ID}", in: "{DATABASE-ID}", block: { result in
             
     switch result {
         case .initial(let items):
-        let yourModels = items as? [{YOURMODEL}]
+        let yourModels = items as? [YOURMODEL]
         ...
         case .update(let items)
-        let yourModels = items as? [{YOURMODEL}]
+        let yourModels = items as? [YOURMODEL]
         ...
     }
 })
 
 //To the Single YOURMODEL having PrimaryKey
-let match = Match(name: "M1")
+let match = Match(id: "1", name: "M1")
 match.subscribe({ (result) in
        if case let SubscriptionResult.initial(items) = result {
-           let yourModels: [{YOURMODEL}] = items as? [{YOURMODEL}] ?? []
+           let yourModels: [YOURMODEL] = items as? [YOURMODEL] ?? []
            yourModels.first
            ...
        }
        else if case let SubscriptionResult.update(items) = result {
-           let yourModel = items.first as? {YOURMODEL}
+           let yourModel = items.first as? YOURMODEL
            ...
        }
 })
@@ -163,7 +163,7 @@ private var categories: [Category] = []
 private weak var token: SubscriptionToken?
 
 func fetchCategories(completion: (()->Void)?) {
-    token = categories.subscribe(block: { [weak self] result in
+    token = [Category].subscribe(block: { [weak self] result in
         guard let self = self else { return }
         if case let .initial(items) = result {
             self.categories = items as? [Category] ?? []
@@ -197,8 +197,8 @@ private var products: [Product] = []
 private weak var token: SubscriptionToken?
 
 func fetchProducts(of category: Category, completion: (()->Void)?) {
-    //token = products.subscribe(to: category.id, in: "purchased", block: { [weak self] result in
-    token = products.subscribe(to: category.id, block: { [weak self] result in
+    //token = [Product].subscribe(to: category.id, in: "purchased", block: { [weak self] result in
+    token = [Product].subscribe(to: category.id, block: { [weak self] result in
         guard let self = self else { return }
         if case let .initial(items) = result {
             self.products = items as? [Product] ?? []
@@ -301,14 +301,17 @@ products.updateAllMatchingPrimaryKeys(in: "default") //All elements in specific 
 products.updateAllMatchingPrimaryKeys(in: "default", "purchased") //All elements in specific databases
 ```
 
-**Examples of UI**
+
+
+
+
+**EXAMPLES of UI**
 
 There is no primary key on Swift Types like String. Therefore, you can subscribe to a list.
 ```
 @IBOutlet weak var labelTimer: UILabel? {
     didSet {        
-        let tick: [String] = []
-        let _ = tick.subscribe(to: "timer", block: { [weak self] result in
+        let _ = [String].subscribe(to: "timer", block: { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .initial(let items), .update(let items):
@@ -329,11 +332,11 @@ let string = formatter.string(from: Date())
 [string].distribute(to: "timer")
 ```
 
-Another example; User  
+Another example; User (Database version)
 ```
 @IBOutlet weak var labelGreeting: UILabel? {
     didSet {        
-        let _ = User().subscribe(in: "login", block: { [weak self] result in
+        let _ = [User].subscribe(in: "login", block: { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .initial(let items), .update(let items):
@@ -351,18 +354,45 @@ Another example; User
 //Somewhere else
 let user = User()
 user.name = "Hasan"
-user.distribute(in: "login")
+[user].distribute(in: "login") //it is subscribed to user list, not list of user's primary key.
 
 //Logout
 User.removeAll(in: "login")
+```
+
+Another example of User  (List version)
+```
+@IBOutlet weak var labelGreeting: UILabel? {
+    didSet {        
+        let _ = [User].subscribe(to: "login", block: { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .initial(let items), .update(let items):
+                if let user = items.first as? User {
+                    self.labelGreeting?.text = "Hello, \(user.name)"
+                }
+                else {
+                    self.labelGreeting?.text = "Please login"
+                }
+            }
+        })
+    }
+}
+
+//Somewhere else
+let user = User()
+user.name = "Hasan"
+[user].distribute(to: "login") //it is subscribed to user list, not list of user's primary key.
+
+//Logout
+[User]().distribute(to: "login")
 ```
 
 Another example; Bool  
 ```
 @IBOutlet weak var labelGreeting: UILabel? {
     didSet {        
-        let loggedIn: [Bool] = []
-        let _ = loggedIn.subscribe(to: "login status", block: { [weak self] result in
+        let _ = [Bool].subscribe(to: "login status", block: { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .initial(let items), .update(let items):
