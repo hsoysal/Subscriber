@@ -18,7 +18,7 @@ To install Subscriber using Swift Package Manager look for https://github.com/hs
 
 
 * Register items
-```
+```swift
 //To the List of YOURMODEL
 let token = [YOURMODEL].subscribe({ result in
             
@@ -58,12 +58,12 @@ match.subscribe({ (result) in
 
 * Unregister items
 
-```
+```swift
 token.invalidate()
 ```
 
 * Distributing Your Single Model
-```
+```swift
 let team = Team()
 team.ID = "TeamID1"
 team.name = "Team 1"
@@ -80,7 +80,7 @@ team.distribute(in: "{DATABASE-ID}")
 ```
 
 * Distributing Your Multiple Models
-```
+```swift
 let team = Team()
 team.ID = "TeamID1"
 team.name = "Team 1"
@@ -112,7 +112,7 @@ teams.distribute(to: "{LIST-ID}", in: "{DATABASE-ID}")
 
 * Updating Same Model
 
-```
+```swift
 var primaryKey: String? { self.ID } //dynamic
 var primaryKey: String? { "id" }    //static
 ```
@@ -122,7 +122,7 @@ var primaryKey: String? { "id" }    //static
 
 First of all, let's define our Models 
 
-```
+```swift
 struct Category {
     var id: String?
     var name: String?
@@ -157,7 +157,7 @@ extension Bool: Subscribable {}
 
 
 * List of Categories 
-```
+```swift
 private var categories: [Category] = []
 private weak var token: SubscriptionToken?
 
@@ -191,7 +191,7 @@ fetchCategories(completion: {
 
 It subscribes to the list of category's id. So products of different categories will be separated from each other. 
 If you wish to hold same product list of same category more than one, you can just give database id.  
-```
+```swift
 private var products: [Product] = []
 private weak var token: SubscriptionToken?
 
@@ -226,7 +226,7 @@ fetchProducts(of: currentCategory, completion: {
 
 It subscribes to the Product on Product Detail Page, for example. So if this product with primary key has updates somewhere else, it will be updated here too. 
 
-```
+```swift
 private var currentProduct: Product?
 private weak var token: SubscriptionToken?
 
@@ -260,7 +260,7 @@ token = currentProduct?.subscribe(in: "purchased", block: { [weak self] result i
 
 **Category List**
 
-```
+```swift
 let categories: [Category] = [...]
 categories.distribute()         
 categories.distribute(to: "LIST-ID")
@@ -270,7 +270,7 @@ categories.distribute(to: "LIST-ID", in: "DATABASE-ID", append: true) //If there
 
 **Product List**
 
-```
+```swift
 let products: [Product] = [...]
 products.distribute()         
 products.distribute(to: currentCategory.id)
@@ -280,7 +280,7 @@ products.distribute(to: currentCategory.id, in: "purchased", append: true) //If 
 
 **Product**
 
-```
+```swift
 let product: Product
 product.distribute()         
 product.distribute(in: "purchased")
@@ -290,7 +290,7 @@ product.distribute(in: "purchased")
 
 You may want all copies of Product or Products to be updated across the application.
 
-```
+```swift
 let product: Product
 product.updateAllMatchingPrimaryKeys() //All databases
 product.updateAllMatchingPrimaryKeys(in: "default") //Specific databases
@@ -304,10 +304,10 @@ products.updateAllMatchingPrimaryKeys(in: "default", "purchased") //All elements
 
 
 
-# Examples of UI
+# Examples of **even** UI 🚀🚀🚀
 
 There is no primary key on Swift Types like String. Therefore, you can subscribe to a list.
-```
+```swift
 @IBOutlet weak var labelTimer: UILabel? {
     didSet {        
         let _ = [String].subscribe(to: "timer", block: { [weak self] result in
@@ -332,7 +332,7 @@ let string = formatter.string(from: Date())
 ```
 
 * Another example; User (Database version)
-```
+```swift
 @IBOutlet weak var labelGreeting: UILabel? {
     didSet {        
         let _ = [User].subscribe(in: "login", block: { [weak self] result in
@@ -360,7 +360,7 @@ User.removeAll(in: "login")
 ```
 
 * Another example of User  (List version)
-```
+```swift
 @IBOutlet weak var labelGreeting: UILabel? {
     didSet {        
         let _ = [User].subscribe(to: "login", block: { [weak self] result in
@@ -388,7 +388,7 @@ user.name = "Hasan"
 ```
 
 * Another example; Bool  
-```
+```swift
 @IBOutlet weak var labelGreeting: UILabel? {
     didSet {        
         let _ = [Bool].subscribe(to: "login status", block: { [weak self] result in
