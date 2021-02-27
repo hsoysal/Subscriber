@@ -278,7 +278,9 @@ public extension Subscribable {
         all.filter({ $0.type == type }).forEach({ each in
             if let index = each.collection.firstIndex(where: { $0.primaryKey == primaryKey }) {
                 each.collection[index] = self
-                Subscriber.current.subscriptions.first(where: { $0.type == type && $0.primaryKey == each.primaryKey && $0.database == each.database })?.subscription(.update(each.collection))
+                Subscriber.current.subscriptions
+                    .filter({ $0.type == type && $0.primaryKey == each.primaryKey && $0.database == each.database })
+                    .forEach({ $0.subscription(.update(each.collection)) })
             }
         })
     }
