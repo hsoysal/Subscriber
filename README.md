@@ -255,9 +255,11 @@ token = currentProduct?.subscribe(in: "purchased", block: { [weak self] result i
 })
 ```
 
-**Examples of Distributing**
 
-* Category List
+
+# Examples of Distributing
+
+**Category List**
 
 ```
 let categories: [Category] = [...]
@@ -267,7 +269,7 @@ categories.distribute(to: "LIST-ID", in: "DATABASE-ID")
 categories.distribute(to: "LIST-ID", in: "DATABASE-ID", append: true) //If there is pagination
 ```
 
-* Product List
+**Product List**
 
 ```
 let products: [Product] = [...]
@@ -277,7 +279,7 @@ products.distribute(to: currentCategory.id, in: "purchased")
 products.distribute(to: currentCategory.id, in: "purchased", append: true) //If there is pagination
 ```
 
-* Product
+**Product**
 
 ```
 let product: Product
@@ -305,7 +307,7 @@ products.updateAllMatchingPrimaryKeys(in: "default", "purchased") //All elements
 
 
 
-**EXAMPLES of UI**
+# EXAMPLES of UI
 
 There is no primary key on Swift Types like String. Therefore, you can subscribe to a list.
 ```
@@ -332,7 +334,7 @@ let string = formatter.string(from: Date())
 [string].distribute(to: "timer")
 ```
 
-Another example; User (Database version)
+* Another example; User (Database version)
 ```
 @IBOutlet weak var labelGreeting: UILabel? {
     didSet {        
@@ -360,7 +362,7 @@ user.name = "Hasan"
 User.removeAll(in: "login")
 ```
 
-Another example of User  (List version)
+* Another example of User  (List version)
 ```
 @IBOutlet weak var labelGreeting: UILabel? {
     didSet {        
@@ -388,7 +390,7 @@ user.name = "Hasan"
 [User]().distribute(to: "login")
 ```
 
-Another example; Bool  
+* Another example; Bool  
 ```
 @IBOutlet weak var labelGreeting: UILabel? {
     didSet {        
