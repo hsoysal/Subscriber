@@ -174,8 +174,16 @@ public extension Array where Element: Subscribable {
         
         same primary key of same object will be updated in both `cities` and `capitals` databases if database parameter is `nil`
     */
-    func updateAllMatchingPrimaryKeys(in database: Subscriber.Database? = "default") {
-        self.forEach({ $0.updateAllMatchingPrimaryKeys(in: database) })
+    func updateAllMatchingPrimaryKeys(in database: Subscriber.Database?...) {
+        self.forEach({ $0.updateAllMatchingPrimaryKeys() })
+        if database.isEmpty { //All databases
+            self.forEach({ $0.updateAllMatchingPrimaryKeys() })
+        }
+        else { //specific databases
+            for each in database.compactMap({ $0 }) {
+                self.forEach({ $0.updateAllMatchingPrimaryKeys(in: each) })
+            }
+        }
     }
 }
 
@@ -252,17 +260,18 @@ public extension Subscribable {
         
         same primary key of same object will be updated in both `cities` and `capitals` databases if database parameter is `nil`
     */
-    func updateAllMatchingPrimaryKeys(in database: Subscriber.Database? = "default") {
+    func updateAllMatchingPrimaryKeys(in database: Subscriber.Database?...) {
         
         guard let primaryKey = self.primaryKey else { return }
         var all: [SubscriptionCollection] = []
-        if let database = database {
-            all = Subscriber.current.collection[database] ?? []
-        }
-        else {
+        let databases:[Subscriber.Database] = database.compactMap({$0})
+        if databases.isEmpty { //All databases
             for (_, value) in Subscriber.current.collection {
                 all.append(contentsOf: value)
             }
+        }
+        else {
+            databases.forEach({ all.append(contentsOf: Subscriber.current.collection[$0] ?? []) })
         }
         
         let type: String = String(describing: Self.self)
