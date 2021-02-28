@@ -80,16 +80,6 @@ final public class Subscriber {
         return subscriptionCollection.collection as! [T]
     }
     
-    /**This will remove all given objects in database `database` default value is `default`
-    */
-    public func removeAll<T:Subscribable>(of type: T.Type, in database: Subscriber.Database = "default") {
-        
-        let type: String = String(describing: type)
-        collection[database]?.removeAll(where: { $0.database == database && $0.type == type })
-        subscriptions.filter({ $0.type == type && $0.database == database })
-            .forEach({ $0.subscription(.update([])) })
-    }
-    
     fileprivate func notify(by type: String, primaryKey: String, database: Subscriber.Database) {
         
         guard let collection:[Subscribable] = self.collection[type, primaryKey, database].first?.collection else { return }
@@ -214,7 +204,7 @@ public extension Subscribable {
     */
     func subscribe(in database: Subscriber.Database = "default", block:@escaping SubscriptionResultBlock) -> SubscriptionToken? {
         
-        distribute(in: database)
+        if self.primaryKey != nil{ distribute(in: database) } // It will be distributes its primary key list id
         let key = UUID().uuidString
         Subscriber.current.append(token: key, type: Self.self, primaryKey: self.primaryKey ?? "default", database: database, block: block)
         let subscription = SubscriptionToken()
