@@ -1,5 +1,7 @@
 # Subscriber
-Subscriber is a 100% Swift framework to observe class or struct changes in the application. For example; you have a list on the first screen. And you update your class or struct on the second screen. You need to observe the changes on the first page. So, thats why you can use this framework. 
+Subscriber is a 100% Swift framework to observe class or struct changes in the application. 
+
+For example; you have a list on the first screen. And you update your class or struct on the second screen. You need to observe the changes on the first page. So, thats why you can use this framework. 
 
 **Features**
 
